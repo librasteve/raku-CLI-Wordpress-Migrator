@@ -4,7 +4,7 @@ use warnings;
 
 #cd WP-DIR
 
-`wp search-replace 'https://ckdemo.mydomain.com' 'https://celebdemo.mydomain.com' --dry-run`;
+`wp search-replace 'https://ckdemo.mydomain.com' 'https://newsd.mydomain.com' --dry-run`;
 
 #`wp plugin activate --all`;    #option (typically already activated)
 #`wp plugin update --all`;      #option
