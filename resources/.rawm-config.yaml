@@ -1,0 +1,13 @@
+export-from:
+  user: myusername
+  domain: mydomain.com
+  subdom: sdname
+  key-pub: kpname
+  port: 22
+import-to:
+  user: myusername
+  domain: mydomain.com
+  subdom: sdname
+  key-pub: kpname
+  port: 22
+

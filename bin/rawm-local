@@ -1,0 +1,91 @@
+#!/usr/bin/env raku
+use v6.d;
+
+# run this local script to push from Local to Remote
+
+### 0 CONFIG
+
+use DateTime::Format;
+
+say my $now = strftime('%Y%m%d-%H-%M-%S', DateTime.now);
+
+class Local {
+    has $.name = 'sdname-v137-wsolok-clone';
+    has $.port = '10043';
+
+    has $.host = 'localhost';
+    has $.root = '~/Local Sites';
+
+    method url {
+        $!host ~ ':' ~ $!port
+    }
+    method fqp {
+        $!root ~ '/' ~ $!name ~ '/app/public'
+    }
+    method sql {
+        "backup-db-$now.sql"
+    }
+    method dump {
+        "wp db export $.sql"
+    }
+    method tar {
+        "tar -czf backup-fs-$now.tar.gz wp-content"
+    }
+}
+
+
+my $l = Local.new;
+#say $l.url;
+#say $l.fqp;
+#say $l.sql;
+say $l.dump;
+say $l.tar;
+exit;
+
+### 1 BACKUP LOCAL
+
+chdir "{$l.fqp}";
+
+shell <wp db export {$l.sql}>
+
+
+
+
+
+#`[
+
+local
+start site
+open site shell
+wp db cli
+
+
+UPLOAD exporter.pl
+
+#rsync -e "ssh -p 22" -va . myusername@mydomain.com:/home/myusername/sdname.mydomain.com
+
+(will need to use some variant of expect to send pwd)
+
+
+RUN
+
+remote run exporter.pl
+
+DOWNLOAD
+
+scp -P 22 -r myusername@mydomain.com:/home/myusername/sdname.mydomain.com/backup-fs-20240613-09-30-26.tar.gz .
+scp -P 22 -r myusername@mydomain.com:/home/myusername/sdname.mydomain.com/backup-db-20240613-09-30-26.sql .
+
+(will need to use some variant of expect to send pwd)
+
+CLEANUP
+
+probably shouldnt have any files in public dir
+
+#]
+
+# DATABASE
+
+
+
+
