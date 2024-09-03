@@ -1,0 +1,25 @@
+{
+  "auth": "zef:librasteve",
+  "authors": [
+    "librasteve"
+  ],
+  "build-depends": [
+  ],
+  "depends": [
+  ],
+  "description": "blah blah blah",
+  "license": "Artistic-2.0",
+  "name": "CLI::Wordpress::Migrator",
+  "perl": "6.d",
+  "provides": {
+    "CLI::Wordpress::Migrator": "lib/CLI/Wordpress/Migrator.rakumod"
+  },
+  "resources": [
+  ],
+  "source-url": "",
+  "tags": [
+  ],
+  "test-depends": [
+  ],
+  "version": "0.0.1"
+}

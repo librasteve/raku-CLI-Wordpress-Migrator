@@ -1,0 +1,6 @@
+use Test;
+use CLI::Wordpress::Migrator;
+
+pass "replace me";
+
+done-testing;
