@@ -2,21 +2,25 @@ class Build {
     method build($dist-path) {
 
         chdir $*HOME;
-        mkdir '.rawppp-config';    # FIXME
-        chdir '.rawppp-config';
+        mkdir '.rawm-config';    # FIXME
+        chdir '.rawm-config';
 
-        my $exporter-text = q:to/ENDEX/;    # FIXME vv
-#!/usr/bin/perl
+        my $text1 = q:to/END1/;
+from:
+  user: myusername
+  domain: mydomain.com
+  subdom: sdname
+  key-pub: kpname
+  port: 22
+to:
+  user: myusername
+  domain: mydomain.com
+  subdom: sdname
+  key-pub: kpname
+  port: 22
+END1
 
-##chdir
-
-`wp db export backup-db-20240605-11-00-22.sql`;
-`tar -czf backup-fs-20240605-11-00-22.tar.gz wp-content`;
-
-##mv backup* ../sdname-backups
-ENDEX
-
-        qqx`echo \'$exporter-text\' > exporter.pl`;
+        qqx`echo \'$text1\' > rawm-config.yaml`;
 
         warn 'Build successful';
 

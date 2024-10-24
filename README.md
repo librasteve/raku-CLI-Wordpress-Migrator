@@ -55,9 +55,10 @@ TODOS
 - [ ] new raku module
 - [ ] cmd with MAIN direct actions
 - [ ] need module name CLI::Wordpress::Migrator
-- [ ] bring pp-local into the process
 - [ ] wp db search 'localhost' to mop up
 
+Notes:
+- do not try to do export/import to Local.app (constraint of site shell)
 
 ---
 

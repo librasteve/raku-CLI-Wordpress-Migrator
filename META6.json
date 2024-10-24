@@ -15,9 +15,7 @@
   "provides": {
     "CLI::Wordpress::Migrator": "lib/CLI/Wordpress/Migrator.rakumod"
   },
-  "resources": [
-    ".rawm-config.yaml"
-  ],
+  "resources": [],
   "license": "Artistic-2.0",
   "tags": [],
   "source-url": ""

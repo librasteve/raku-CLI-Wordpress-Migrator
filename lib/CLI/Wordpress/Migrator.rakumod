@@ -1,32 +1,17 @@
-unit class CLI::Wordpress::Migrator;
+unit module CLI::Wordpress::Migrator;
 
+use YAMLish;
 
-=begin pod
+my %config-yaml := load-yaml("$*HOME/.rawm-config/rawm-config.yaml".IO.slurp);
 
-=head1 NAME
+class Login is export {
+    my $y := %config-yaml;
 
-CLI::Wordpress::Migrator - blah blah blah
+    has $.server;
 
-=head1 SYNOPSIS
-
-=begin code :lang<raku>
-
-use CLI::Wordpress::Migrator;
-
-=end code
-
-=head1 DESCRIPTION
-
-CLI::Wordpress::Migrator is ...
-
-=head1 AUTHOR
-
-librasteve <librasteve@furnival.net>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2024 librasteve
-
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
-
-=end pod
+    has $.user    = $y{$!server}<user>;
+    has $.domain  = $y{$!server}<domain>;
+    has $.subdom  = $y{$!server}<subdom>;
+    has $.key-pub = $y{$!server}<key-pub>;
+    has $.port    = $y{$!server}<port>;
+}
