@@ -64,6 +64,11 @@ TODOS
 MIGRATION PROCESS
 =================
 
+The process involves three systems:
+ - export-from server which is running the site
+ - import-to server which is ready for the site
+ - local client which connects to the export / import servers in turn
+
 This module supports two cmd s:
 
 ```raku
