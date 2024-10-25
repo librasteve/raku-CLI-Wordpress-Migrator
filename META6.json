@@ -14,7 +14,7 @@
   "test-depends": [],
   "provides": {
     "CLI::Wordpress::Migrator": "lib/CLI/Wordpress/Migrator.rakumod",
-    "CLI::Wordpress::Migrator::Exporter": "lib/CLI/Wordpress/Migrator/Exporter.rakumod"
+    "CLI::Wordpress::Migrator::Export": "lib/CLI/Wordpress/Migrator/Export.rakumod"
   },
   "resources": [],
   "license": "Artistic-2.0",

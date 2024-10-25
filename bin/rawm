@@ -3,45 +3,27 @@ use v6.d;
 
 use DateTime::Format;
 use CLI::Wordpress::Migrator;
-use CLI::Wordpress::Migrator::Exporter;
+use CLI::Wordpress::Migrator::Export;
 
 say my $now = strftime('%Y%m%d-%H-%M-%S', DateTime.now);
 
-my $server   = Server.new: :name<from>;
-my $exporter = Exporter.new: :$server, :$now;
+my $server = Server.new: :name<from>;
+my $export = Export.new: :$server, :$now;
 
-$exporter.perl-remote;
-
-
-
-
-#`[
-
-UPLOAD exporter.pl
-
-#rsync -e "ssh -p 22" -va . myusername@mydomain.com:/home/myusername/sdname.mydomain.com
-
-(will need to use some variant of expect to send pwd)
+#$export.backup;
+#say "Remote backup done!";
+#
+#$export.download;
+#say "File download done!";
+#
+#$export.cleanup;
 
 
-RUN
+$export.all;
+say 'phew';
 
-remote run exporter.pl
 
-DOWNLOAD
 
-scp -P 22 -r myusername@mydomain.com:/home/myusername/sdname.mydomain.com/backup-fs-20240613-09-30-26.tar.gz .
-scp -P 22 -r myusername@mydomain.com:/home/myusername/sdname.mydomain.com/backup-db-20240613-09-30-26.sql .
-
-(will need to use some variant of expect to send pwd)
-
-CLEANUP
-
-probably shouldnt have any files in public dir
-
-#]
-
-# DATABASE
 
 
 
