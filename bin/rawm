@@ -1,68 +1,70 @@
 #!/usr/bin/env raku
 use v6.d;
 
-use CLI::Wordpress::Migrator;
-
-### 0 CONFIG
-
 use DateTime::Format;
+use CLI::Wordpress::Migrator;
+use CLI::Wordpress::Migrator::Exporter;
 
 say my $now = strftime('%Y%m%d-%H-%M-%S', DateTime.now);
 
-#class Local {
-#    has $.name = 'sdname-v137-wsolok-clone';
-#    has $.port = '10043';
-#
-#    has $.host = 'localhost';
-#    has $.root = '~/Local Sites';
-#
-#    method url {
-#        $!host ~ ':' ~ $!port
-#    }
-#    method fqp {
-#        $!root ~ '/' ~ $!name ~ '/app/public'
-#    }
-#    method sql {
-#        "backup-db-$now.sql"
-#    }
-#    method dump {
-#        "wp db export $.sql"
-#    }
-#    method tar {
-#        "tar -czf backup-fs-$now.tar.gz wp-content"
-#    }
-#}
-
-my $l = Login.new: :server<to>;
-dd $l;
 
 
+my $server = Server.new: :name<from>;
+dd $server;
 
-#my $l = Local.new;
-#say $l.url;
-#say $l.fqp;
-#say $l.sql;
-#say $l.dump;
-#say $l.tar;
+my $e = Exporter.new: :$server, :$now;
+say $e.perl;
+
+
 exit;
 
-### 1 BACKUP LOCAL
-
-#chdir "{$l.fqp}";
+#my $user     = 'myusername';
+#my $domain   = 'mydomain.com';
+#my $subdom   = 'sdname';
+#my $key-pub  = 'kpname';
+#my $port     = 22;
 #
-#shell <wp db export {$l.sql}>
+#my $bu-dir   = "$subdom.backup";
+#my $wp-dir   = "$subdom.$domain" ;
+#
+#my $login    = "$user@$domain";
+#my $home-path = "/home/$user";
+#my $key-dir  = '~/.ssh';
+#my $key-path = "$key-dir/$key-pub";
 
+## spawn process and ssh connect it
+#my $proc = Proc::Async.new: :w, qqw|ssh -p $port -tt -i $key-path $login|;
+#
+## subscribe to new output from out and err handles:
+#$proc.stdout.tap(-> $v { print "Output: $v" });
+#$proc.stderr.tap(-> $v { print "Error:  $v" });
+
+
+#sub perl {
+#    my $code = q:to/END/;
+#    #!/usr/bin/perl
+#    use strict;
+#    use warnings;
+#
+#    print "Doing backup at %NOW%\n";
+#
+#    my $sql_file = "backup-db-%NOW%.sql";
+#    `wp db --path='../%WP-DIR%' export $sql_file`;
+#
+#    my $tar_file = "backup-fs-%NOW%.tar.gz";
+#    `tar -czf $tar_file ../%WP-DIR%/wp-content`;
+#    END
+#
+#    $code ~~ s:g/'%NOW%'   /$now/;
+#    $code ~~ s:g/'%WP-DIR%'/$wp-dir/;
+#
+#    $code
+#}
 
 
 
 
 #`[
-
-local
-start site
-open site shell
-wp db cli
-
 
 UPLOAD exporter.pl
 
