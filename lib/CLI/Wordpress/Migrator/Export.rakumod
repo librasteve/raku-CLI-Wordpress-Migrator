@@ -2,13 +2,13 @@ use CLI::Wordpress::Migrator;
 
 class Export {
     has Server $.server;
-    has Str    $.now;
+    has Str    $.timestamp;
 
     method bu-db-fn {
-        "backup-db-{ $.now }.sql"
+        "backup-db-{$.timestamp}.sql"
     }
     method bu-fs-fn {
-        "backup-fs-{ $.now }.tar.gz"
+        "backup-fs-{$.timestamp}.tar.gz"
     }
 
     method perl {
@@ -19,13 +19,14 @@ class Export {
 
         print "Doing remote backup at %NOW%\n";
 
-        `wp db --path='../%WP-DIR%' export %DB-FN%`;
-        `tar -czf %FS-FN% ../%WP-DIR%/wp-content`;
+        `wp db --path='../%WP-DIR%' export %BU-DB-FN%`;
+        `tar -czf %BU-FS-FN% ../%WP-DIR%/wp-content`;
         END
 
-        $code ~~ s:g/'%DB-FN%' /{ $.bu-db-fn }/;
-        $code ~~ s:g/'%FS-FN%' /{ $.bu-fs-fn }/;
-        $code ~~ s:g/'%WP-DIR%'/{ $.server.wp-dir }/;
+        $code ~~ s:g/'%NOW%'     /{ $.timestamp}/;
+        $code ~~ s:g/'%BU-DB-FN%'/{ $.bu-db-fn }/;
+        $code ~~ s:g/'%BU-FS-FN%'/{ $.bu-fs-fn }/;
+        $code ~~ s:g/'%WP-DIR%'  /{ $.server.wp-dir }/;
         $code
     }
 
@@ -55,14 +56,14 @@ class Export {
 
     method download {
         my $s := $.server;
+        say "Doing file download...";
 
-        say "Doing file download.";
         qqx`scp -P 22007 -i { $s.key-path } -r { $s.login }:{ $s.hm-dir }/{ $s.bu-dir }/{ $.bu-db-fn } .`;
         qqx`scp -P 22007 -i { $s.key-path } -r { $s.login }:{ $s.hm-dir }/{ $s.bu-dir }/{ $.bu-fs-fn } .`;
     }
 
     method cleanup {
-        say "Doing remote cleanup.";
+        say "Doing remote cleanup...";
 
         my $s := $.server;
 
@@ -88,7 +89,7 @@ class Export {
         say "File download done!";
 
         $.cleanup;
-        say 'phew';
+        say 'Remote cleanup done!';
     }
 }
 

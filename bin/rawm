@@ -5,25 +5,46 @@ use DateTime::Format;
 use CLI::Wordpress::Migrator;
 use CLI::Wordpress::Migrator::Export;
 
-say my $now = strftime('%Y%m%d-%H-%M-%S', DateTime.now);
+my $now = strftime('%Y%m%d-%H-%M-%S', DateTime.now);
 
-my $server = Server.new: :name<from>;
-my $export = Export.new: :$server, :$now;
+enum Command <export>;
 
-#$export.backup;
-#say "Remote backup done!";
-#
-#$export.download;
-#say "File download done!";
-#
-#$export.cleanup;
+sub MAIN(
+    Command $cmd,                   #= One of <export>
+    Bool   :$backup-only,           #= Only perform remote backup
+    Bool   :$download-only,         #= Only perform download (needs timestamp)
+    Bool   :$cleanup-only,          #= Only perform remote cleanup
+    Str    :$ts,                    #= Enter timestamp of files [Str] eg. --ts='20241025-17-02-42'
+    ) {
+    say $cmd;
 
+    given $cmd {
+        when 'export' {
+            my $timestamp = $ts // $now;
+            say "Using timestamp: $timestamp";
+            say "This can take a few mins, please be patient";
+            say "------";
 
-$export.all;
-say 'phew';
+            my $server = Server.new: :name<from>;
+            my $export = Export.new: :$server, :$timestamp;
 
+            if $backup-only {
+                $export.backup;
+                say "Remote backup done!";
+            } elsif $download-only && $ts {
+                $export.download;
+                say "File download done!";
+            } elsif $cleanup-only {
+                $export.cleanup;
+                say "Remote cleanup done!";
+            } else {
+                $export.all;
+            }
+        }
+    }
 
-
+    say '...phew';
+}
 
 
 
