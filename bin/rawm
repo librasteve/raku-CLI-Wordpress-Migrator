@@ -16,7 +16,6 @@ sub MAIN(
     Bool   :$backup-only,           #= Only perform remote backup
     Bool   :$download-only,         #= Only perform download (requires timestamp [--ts])
     Bool   :$cleanup-only,          #= Only perform remote cleanup
-    Bool   :$no-install,            #= Skip the install step
     ) {
     say $cmd;
 
@@ -52,7 +51,7 @@ sub MAIN(
                     $export.download;
                     say "File download done!";
                 } else {
-                    die "Need ts if download-only";
+                    die "Need --ts=[timestamp] if download-only";
                 }
             } elsif $cleanup-only {
                 $export.cleanup;
