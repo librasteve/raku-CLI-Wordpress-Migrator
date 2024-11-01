@@ -1,0 +1,28 @@
+from:
+  user: myusername
+  domain: mydomain.com
+  subdom: sdname
+  key-pub: kpname
+  port: 22
+to:
+  user: myusername
+  domain: mydomain.com
+  subdom: sdname
+  key-pub: kpname
+  port: 22
+wp-config:
+  locale: en_GB
+  db:
+    name: dbname
+    user: dbuser
+    pass: dbpass
+    prefix: wp_
+  title: My New WP Installation
+  url: mysite.com
+  admin:
+    user: aduser
+    pass: adpass
+    email: ademail
+
+
+

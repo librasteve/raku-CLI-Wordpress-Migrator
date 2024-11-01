@@ -1,30 +1,18 @@
 class Build {
     method build($dist-path) {
 
-        chdir $*HOME;
-        mkdir '.rawm-config';    # FIXME
-        chdir '.rawm-config';
+        my $name = 'rawm-config';
+        my $dir  = "$*HOME/.$name";
+        my $file =  $name ~ ".yaml";
+        my $bak  =  $name ~ "BAK.yaml";
 
-        my $text1 = q:to/END1/;
-        from:
-          user: myusername
-          domain: mydomain.com
-          subdom: sdname
-          key-pub: kpname
-          port: 22
-        to:
-          user: myusername
-          domain: mydomain.com
-          subdom: sdname
-          key-pub: kpname
-          port: 22
-        END1
+        mkdir $dir;
 
-        qqx`echo \'$text1\' > rawm-config.yaml`;
+        copy "resources/$file", "$dir/$file";
 
-        if 'rawm-configBAK.yaml'.IO.e {
-                warn 'Restoring rawm-configBAK.yaml';
-                copy 'rawm-configBAK.yaml', 'rawm-config.yaml';
+        if "$dir/$bak".IO.e {
+            warn "Restoring $dir/$bak";
+            copy "$dir/$bak", "$dir/$file";
         }
 
         warn 'Build successful';

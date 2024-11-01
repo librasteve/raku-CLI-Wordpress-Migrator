@@ -4,21 +4,37 @@ use v6.d;
 use DateTime::Format;
 use CLI::Wordpress::Migrator;
 use CLI::Wordpress::Migrator::Export;
+use CLI::Wordpress::Migrator::Install;
 
 my $now = strftime('%Y%m%d-%H-%M-%S', DateTime.now);
 
-enum Command <export>;
+enum Command <connect export install>;
 
 sub MAIN(
-    Command $cmd,                   #= One of <export>
-    Bool   :$backup-only,           #= Only perform remote backup
-    Bool   :$download-only,         #= Only perform download (needs timestamp)
-    Bool   :$cleanup-only,          #= Only perform remote cleanup
+    Command $cmd,                   #= One of <connect export install>
     Str    :$ts,                    #= Enter timestamp of files [Str] eg. --ts='20241025-17-02-42'
+    Bool   :$backup-only,           #= Only perform remote backup
+    Bool   :$download-only,         #= Only perform download (requires timestamp [--ts])
+    Bool   :$cleanup-only,          #= Only perform remote cleanup
+    Bool   :$no-install,            #= Skip the install step
     ) {
     say $cmd;
 
     given $cmd {
+
+        when 'connect' {
+            my $timestamp = $ts // $now;
+            say "Using timestamp: $timestamp";
+            say "Testing remote connection";
+            say "------";
+
+            my $server = Server.new: :name<from>;
+            my $export = Export.new: :$server, :$timestamp;
+
+            $export.connect;
+            say "Remote connection test done!";
+        }
+
         when 'export' {
             my $timestamp = $ts // $now;
             say "Using timestamp: $timestamp";
@@ -31,15 +47,30 @@ sub MAIN(
             if $backup-only {
                 $export.backup;
                 say "Remote backup done!";
-            } elsif $download-only && $ts {
-                $export.download;
-                say "File download done!";
+            } elsif $download-only {
+                if $ts {
+                    $export.download;
+                    say "File download done!";
+                } else {
+                    die "Need ts if download-only";
+                }
             } elsif $cleanup-only {
                 $export.cleanup;
                 say "Remote cleanup done!";
             } else {
                 $export.all;
             }
+        }
+
+        when 'install' {
+            say "This can take a few mins, please be patient";
+            say "------";
+
+            my $server    = Server.new: :name<to>;
+            my $wp-config = WP-Config.new;
+            my $install   = Install.new: :$server, :$wp-config;
+
+            $install.all;
         }
     }
 

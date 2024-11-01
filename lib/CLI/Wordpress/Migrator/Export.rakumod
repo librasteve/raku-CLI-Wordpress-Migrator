@@ -30,6 +30,21 @@ class Export {
         $code
     }
 
+    method connect {
+        my $s := $.server;
+
+        my $proc = Proc::Async.new: :w, qqw|ssh -p { $s.port } -tt -i { $s.key-path } { $s.login }|;
+        $proc.stdout.tap({ print "stdout: $^s" });
+        $proc.stderr.tap({ print "stderr: $^s" });
+
+        my $promise = $proc.start;
+
+        $proc.say("echo 'Hello, World'");
+        $proc.say("id");
+        $proc.say("exit");
+        await $promise;
+    }
+
     method backup {
         my $s := $.server;
 
@@ -42,8 +57,8 @@ class Export {
         $proc.say("echo 'Hello, World'");
         $proc.say("id");
 
-        $proc.say("mkdir { $s.bu-dir }");
-        $proc.say("cd { $s.bu-dir }");
+        $proc.say("mkdir { $s.tp-dir }");
+        $proc.say("cd { $s.tp-dir }");
 
         $proc.say("echo \'{ $.perl }\' > exporter.pl");
         $proc.say('cat exporter.pl | perl');
@@ -58,8 +73,8 @@ class Export {
         my $s := $.server;
         say "Doing file download...";
 
-        qqx`scp -P 22007 -i { $s.key-path } -r { $s.login }:{ $s.hm-dir }/{ $s.bu-dir }/{ $.bu-db-fn } .`;
-        qqx`scp -P 22007 -i { $s.key-path } -r { $s.login }:{ $s.hm-dir }/{ $s.bu-dir }/{ $.bu-fs-fn } .`;
+        qqx`scp -P 22007 -i { $s.key-path } -r { $s.login }:{ $s.hm-dir }/{ $s.tp-dir }/{ $.bu-db-fn } .`;
+        qqx`scp -P 22007 -i { $s.key-path } -r { $s.login }:{ $s.hm-dir }/{ $s.tp-dir }/{ $.bu-fs-fn } .`;
     }
 
     method cleanup {
@@ -75,7 +90,7 @@ class Export {
 
         $proc.say("echo 'Goodbye, World'");
         $proc.say("pwd");
-        $proc.say("rm -rf { $s.bu-dir }");
+        $proc.say("rm -rf { $s.tp-dir }");
 
         $proc.say("exit");
         await $promise;

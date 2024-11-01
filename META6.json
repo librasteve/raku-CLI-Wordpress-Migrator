@@ -15,9 +15,12 @@
   "test-depends": [],
   "provides": {
     "CLI::Wordpress::Migrator": "lib/CLI/Wordpress/Migrator.rakumod",
-    "CLI::Wordpress::Migrator::Export": "lib/CLI/Wordpress/Migrator/Export.rakumod"
+    "CLI::Wordpress::Migrator::Export": "lib/CLI/Wordpress/Migrator/Export.rakumod",
+    "CLI::Wordpress::Migrator::Install": "lib/CLI/Wordpress/Migrator/Install.rakumod"
   },
-  "resources": [],
+  "resources": [
+    "rawm-config.yaml"
+  ],
   "license": "Artistic-2.0",
   "tags": [],
   "source-url": ""
