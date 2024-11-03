@@ -5,25 +5,29 @@ use DateTime::Format;
 use CLI::Wordpress::Migrator;
 use CLI::Wordpress::Migrator::Export;
 use CLI::Wordpress::Migrator::Install;
+use CLI::Wordpress::Migrator::Import;
+use CLI::Wordpress::Migrator::SearchReplace;
 
 my $now = strftime('%Y%m%d-%H-%M-%S', DateTime.now);
 
-enum Command <connect export install>;
+enum Command <connect export install import search-replace>;
 
 sub MAIN(
-    Command $cmd,                   #= One of <connect export install>
+    Command $cmd,                   #= One of <connect export install import search-replace>
     Str    :$ts,                    #= Enter timestamp of files [Str] eg. --ts='20241025-17-02-42'
     Bool   :$backup-only,           #= Only perform remote backup
     Bool   :$download-only,         #= Only perform download (requires timestamp [--ts])
+    Bool   :$upload-only,           #= Only perform upload (requires timestamp [--ts])
+    Bool   :$restore-only,          #= Only perform restore (requires timestamp [--ts])
     Bool   :$cleanup-only,          #= Only perform remote cleanup
-    ) {
+         ) {
     say $cmd;
 
     given $cmd {
+        #| same names for export and import
+        my $timestamp = $ts // $now;
 
         when 'connect' {
-            my $timestamp = $ts // $now;
-            say "Using timestamp: $timestamp";
             say "Testing remote connection";
             say "------";
 
@@ -35,7 +39,6 @@ sub MAIN(
         }
 
         when 'export' {
-            my $timestamp = $ts // $now;
             say "Using timestamp: $timestamp";
             say "This can take a few mins, please be patient";
             say "------";
@@ -70,6 +73,34 @@ sub MAIN(
             my $install   = Install.new: :$server, :$wp-config;
 
             $install.all;
+        }
+
+        when 'import' {
+            die "Need --ts=[timestamp]" unless $ts;
+
+            say "Using timestamp: $timestamp";
+            say "This can take a few mins, please be patient";
+            say "------";
+
+            my $server = Server.new: :name<to>;
+            my $import = Import.new: :$server, :$timestamp;
+
+            if $upload-only {
+                $import.upload;
+                say "File upload done!";
+            } elsif $restore-only {
+                $import.restore;
+                say "Restore done!";
+            } elsif $cleanup-only {
+                $import.cleanup;
+                say "Remote cleanup done!";
+            } else {
+                $import.all;
+            }
+        }
+
+        when 'search-replace' {
+
         }
     }
 

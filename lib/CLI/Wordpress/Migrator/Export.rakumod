@@ -33,6 +33,8 @@ class Export {
     method connect {
         my $s := $.server;
 
+        say "Using " ~ qqw|ssh -p { $s.port } -tt -i { $s.key-path } { $s.login }|;
+
         my $proc = Proc::Async.new: :w, qqw|ssh -p { $s.port } -tt -i { $s.key-path } { $s.login }|;
         $proc.stdout.tap({ print "stdout: $^s" });
         $proc.stderr.tap({ print "stderr: $^s" });

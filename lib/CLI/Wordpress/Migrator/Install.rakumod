@@ -4,8 +4,6 @@ class Install {
     has Server    $.server;
     has WP-Config $.wp-config;
 
-    has $.yo = 'yo';
-
     method perl {
         my $code = q:to/END/;
         #!/usr/bin/perl
@@ -22,7 +20,6 @@ class Install {
 
         print "Creating WP config...\n";
         `wp config create --dbname='%DBNAME%' --dbuser='%DBUSER%' --dbpass='%DBPASS%' --dbprefix='%DBPREFIX%'`;
-
 
         print "Resetting WP database & config...\n";
         `wp db reset --yes`;
@@ -79,7 +76,7 @@ class Install {
         $proc.say("echo \'{ $.perl }\' > installer.pl");
         $proc.say('cat installer.pl | perl');
 
-        sleep 30;
+        sleep 5;
 
         $proc.say("exit");
         await $promise;

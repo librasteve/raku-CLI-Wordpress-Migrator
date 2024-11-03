@@ -16,7 +16,9 @@
   "provides": {
     "CLI::Wordpress::Migrator": "lib/CLI/Wordpress/Migrator.rakumod",
     "CLI::Wordpress::Migrator::Export": "lib/CLI/Wordpress/Migrator/Export.rakumod",
-    "CLI::Wordpress::Migrator::Install": "lib/CLI/Wordpress/Migrator/Install.rakumod"
+    "CLI::Wordpress::Migrator::Import": "lib/CLI/Wordpress/Migrator/Import.rakumod",
+    "CLI::Wordpress::Migrator::Install": "lib/CLI/Wordpress/Migrator/Install.rakumod",
+    "CLI::Wordpress::Migrator::SearchReplace": "lib/CLI/Wordpress/Migrator/SearchReplace.rakumod"
   },
   "resources": [
     "rawm-config.yaml"

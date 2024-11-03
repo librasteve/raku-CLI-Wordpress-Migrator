@@ -93,7 +93,8 @@ Notes:
 1. The install Build process creates a new default config file at `~/.rawm-config/rawm-config.yaml`. To persist your (private) settings, copy and populate this file and save as `~/.rawm-config/rawm-configBAK.yaml`, then subsequent install Build process will restore your settings over the default.
 2. If there is no subdomain use `subdom: _` (ie an underscore) to indicate none.
 
-
+Prerequisites for connection:
+- Uses `ssh -i` access. Please generate an ssh key pair, authorize and save private key in e.g. `~.ssh/id_rsa`, `chmod 400 id_rsa`
 
 ### Export
 
@@ -112,10 +113,13 @@ Prerequisites for install (example):
 - Create new (sub)domain and (sub)dir via cPanel
 - Create new empty database via cPanel
 - Add db user & set their permissions via cPanel
+- Adjust the PHP upload max size to 512M via cPanel > PHP > Options
 - Register url and adjust DNS A record to server IP
-- Use TLS status refresh to get certificates
+- Use TLS status refresh to get certificates via cPanel
 
 Edit your `~/.rawm-config/rawm-config.yaml` to populate these `wp-config` private settings (and copy it to `~/.rawm-config/rawm-configBAK.yaml` if you want them to persist through a re-install).
+
+viz. https://make.wordpress.org/cli/handbook/how-to/how-to-install/
 
 | Action                      | Pseudo Command           |
 |-----------------------------|--------------------------|
@@ -126,24 +130,27 @@ Edit your `~/.rawm-config/rawm-config.yaml` to populate these `wp-config` privat
 | Install WP core             | `wp core install`        |
 | Adjust file/dir permissions | `chmod -R a=r,a+X,u+w .` |
 
-### Importer
+
+### Import
 
 | Action                               | Pseudo Command                        |
 |--------------------------------------|---------------------------------------|
-| Install clean WP instance (option):  | `wp core install ...`                 |
 | Transfer Files to the Import Server: | `scp . user@host:/path/to/temp`       |
 | Connect to the Import Server:        | `ssh user@host`                       |
 | Import the Database:                 | `wp db import mysite.sql`             |
 | Extract the WordPress Files:         | `tar -xzf wordpress_files.tar.gz /..` |
 | Update WordPress Configuration:      | `wp-config.php s/xxx/yyy/`            |
-| Search and Replace URLs (option):    | `wp search-replace 'old' 'new'`       |
-| Update Permalinks (option):          | `wp rewrite flush`                    |
 | Set File Permissions[1]:             | `chmod -R a=r,a+X,u+w .`              |
 
-Notes:
 
-[1] 0644 files & 0755 dirs
-[2] use Elementor>Tools search replace x4
-[3] remake SS3 sliders?
-[4] increase max_upload_size to 512M (cPanel > PHP > Options)
-[5] check table prefix 'wp_'
+### Search & Replace
+
+| Action                               | Pseudo Command                        |
+|--------------------------------------|---------------------------------------|
+| Search and Replace URLs (option):    | `wp search-replace 'old' 'new'`       |
+| Update Permalinks (option):          | `wp rewrite flush`                    |
+
+Postrequisites for restore (example):
+- use Elementor>Tools search replace x4
+- edit all SS3 sliders
+
