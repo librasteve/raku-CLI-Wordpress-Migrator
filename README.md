@@ -1,92 +1,73 @@
 NAME
 ====
 
-CLI::Wordpress::Migrator - blah blah blah
+CLI::Wordpress::Migrator
+
+GETTING STARTED
+===============
+
+```bash
+zef install CLI::Wordpress::Migrator
+```
 
 SYNOPSIS
 ========
 
 ```raku
-use CLI::Wordpress::Migrator;
+> rawm
+Usage:
+  ./rawm [--ts=<Str>] [--backup-only] [--download-only] [--upload-only] [--restore-only] [--cleanup-only] [--dry-run] <cmd>
+  
+    <cmd>              One of <connect export install import search-replace migrate>
+    --ts=<Str>         Enter timestamp of files [Str] eg. --ts='20241025-17-02-42'
+    --backup-only      Only perform remote backup
+    --download-only    Only perform download (requires timestamp [--ts])
+    --upload-only      Only perform upload (requires timestamp [--ts])
+    --restore-only     Only perform restore (requires timestamp [--ts])
+    --cleanup-only     Only perform remote cleanup
+    --dry-run          Do not perform replace
 ```
 
 DESCRIPTION
 ===========
 
-CLI::Wordpress::Migrator is ...
-
-AUTHOR
-======
-
-librasteve <librasteve@furnival.net>
-
-COPYRIGHT AND LICENSE
-=====================
-
-Copyright 2024 librasteve
-
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
-
----
-
-MANUAL PROCESS
-==============
-The manual process that is being automated:
-
-- wp_   <== table prefix in wp-config.inc.
-- softaculous new install
-- increase max load size to 512M (cPanel > PHP > Options)
-- tar -czf mysite-sdname-vXXX_files.tar.gz wp-content
-- use cP File Manager to upload & copy in files
-- upload sql to public dir
-- adjust wp-config.inc
-- wp db import ...
-- wp search-replace 'http://localhost:XXXX' 'https://sdname.mydomain.com'
-- wp search-replace 'http://localhost'      'https://sdname.mydomain.com'
-- [--dry-run]
-
----
-
-TODOS
-=====
-
-- [x] rm passwords (ie yaml)
-- [x] new gh repo
-- [x] new raku module
-- [x] cmd with MAIN direct actions
-- [x] need module name CLI::Wordpress::Migrator
-- [ ] wp db search 'localhost' to mop up
-- [ ] make subdom a list (for multiple backups)
-
-
----
-
-MIGRATION PROCESS
-=================
+CLI::Wordpress::Migrator is a script to migrate a Wordpress site from one server to another. This performs export (backup), install, import (restore) and search-replace steps according to the configuration in `~/.rawm-config/rawm-config.yaml`
 
 The process involves three systems:
  - `from` server which is running the source site
  - `to` server which is ready for the migrated site
  - local client which connects to the export / import servers in turn
 
-This module installs the raku `rawm` command for use from the local client command line.
+This module installs the raku `rawm` command for use from the local client command line. (RAku Wordpress Migrator).
 
-```raku
-Usage:
-  rawm [--backup-only] [--download-only] [--cleanup-only] [--ts=<Str>] <cmd>
-  
-    <cmd>              One of <export>
-    --backup-only      Only perform remote backup
-    --download-only    Only perform download (needs timestamp)
-    --cleanup-only     Only perform remote cleanup
-    --ts=<Str>         Enter timestamp of files [Str] eg. --ts='20241025-17-02-42'
-
+Here is a sample config file:
+```yaml
+from:
+  user: myusername
+  subdom: sdname
+  domain: mydomain.com
+  key-pub: kpname
+  port: 22
+to:
+  user: myusername
+  subdom: sdname
+  domain: mydomain.com
+  key-pub: kpname
+  port: 22
+wp-config:
+  locale: en_GB
+  db:
+    name: dbname
+    user: dbuser
+    pass: dbpass
+    prefix: wp_
+  title: My New WP Installation
+  url: mysite.com
+  admin:
+    user: aduser
+    pass: adpass
+    email: ademail
 ```
-
-GETTING STARTED
-===============
-
-`zef install CLI::Wordpress::Migrator`
 
 Notes:
 
@@ -156,3 +137,14 @@ Postrequisites for restore (example):
 - use Elementor>Tools search replace x4
 - edit all SS3 sliders
 
+AUTHOR
+======
+
+librasteve <librasteve@furnival.net>
+
+COPYRIGHT AND LICENSE
+=====================
+
+Copyright 2024 librasteve
+
+This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
