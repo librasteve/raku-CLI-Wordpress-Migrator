@@ -10,16 +10,17 @@ use CLI::Wordpress::Migrator::SearchReplace;
 
 my $now = strftime('%Y%m%d-%H-%M-%S', DateTime.now);
 
-enum Command <connect export install import search-replace>;
+enum Command <connect export install import search-replace migrate>;
 
 sub MAIN(
-    Command $cmd,                   #= One of <connect export install import search-replace>
+    Command $cmd,                   #= One of <connect export install import search-replace migrate>
     Str    :$ts,                    #= Enter timestamp of files [Str] eg. --ts='20241025-17-02-42'
     Bool   :$backup-only,           #= Only perform remote backup
     Bool   :$download-only,         #= Only perform download (requires timestamp [--ts])
     Bool   :$upload-only,           #= Only perform upload (requires timestamp [--ts])
     Bool   :$restore-only,          #= Only perform restore (requires timestamp [--ts])
     Bool   :$cleanup-only,          #= Only perform remote cleanup
+    Bool   :$dry-run,               #= Do not perform replace
          ) {
     say $cmd;
 
@@ -61,6 +62,7 @@ sub MAIN(
                 say "Remote cleanup done!";
             } else {
                 $export.all;
+                say "Export all done!";
             }
         }
 
@@ -73,6 +75,7 @@ sub MAIN(
             my $install   = Install.new: :$server, :$wp-config;
 
             $install.all;
+            say "Install new done!";
         }
 
         when 'import' {
@@ -96,11 +99,43 @@ sub MAIN(
                 say "Remote cleanup done!";
             } else {
                 $import.all;
+                say "Import all done!";
             }
         }
 
         when 'search-replace' {
+            say "------";
 
+            my $from = Server.new: :name<from>;
+            my $to   = Server.new: :name<to>;
+            my $sr   = SearchReplace.new: :$from, :$to, :$dry-run;
+
+            $sr.all;
+            say "Search and Destroy done!";
+        }
+
+        when 'migrate' {
+            say "Using timestamp: $timestamp";
+            say "This can take a few mins, please be patient";
+            say "------";
+
+            my $from = Server.new: :name<from>;
+            my $to   = Server.new: :name<to>;
+            my $wp-config = WP-Config.new;
+
+            my $export = Export.new: server => $from, :$timestamp;
+            $export.all;
+
+            my $install   = Install.new: server => $to, :$wp-config;
+            $install.all;
+
+            my $import = Import.new: server => $to, :$timestamp;
+            $import.all;
+
+            my $sr   = SearchReplace.new: :$from, :$to, :$dry-run;
+            $sr.all;
+
+            say "Migration completed!";
         }
     }
 

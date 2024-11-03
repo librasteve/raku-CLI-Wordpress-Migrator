@@ -1,13 +1,13 @@
 from:
   user: myusername
-  domain: mydomain.com
   subdom: sdname
+  domain: mydomain.com
   key-pub: kpname
   port: 22
 to:
   user: myusername
-  domain: mydomain.com
   subdom: sdname
+  domain: mydomain.com
   key-pub: kpname
   port: 22
 wp-config:

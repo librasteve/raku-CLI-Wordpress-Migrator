@@ -9,20 +9,20 @@ class Server is export {
     has $.name where * ~~ /[from|to]/;
 
     has $.user    = %y{$!name}<user>;
-    has $.domain  = %y{$!name}<domain>;
     has $.subdom  = %y{$!name}<subdom>;
+    has $.domain  = %y{$!name}<domain>;
     has $.key-pub = %y{$!name}<key-pub>;
     has $.port    = %y{$!name}<port>;
 
     method tp-dir   {
-        if $!subdom ne '_' {
+        if $.subdom ne '_' {
             "$.subdom.temp"
         } else {
             "public_html.temp"
         }
     }
     method wp-dir   {
-        if $!subdom ne '_' {
+        if $.subdom ne '_' {
             "$.subdom.$.domain"
         } else {
             "public_html"
@@ -34,6 +34,14 @@ class Server is export {
 
     method key-dir  { '~/.ssh' }
     method key-path { "$.key-dir/$.key-pub" }
+
+    method hostname {
+        if $.subdom ne '_' {
+            "$.subdom.$.domain";
+        } else {
+            "$.domain";
+        }
+    }
 }
 
 class WP-Config is export {
