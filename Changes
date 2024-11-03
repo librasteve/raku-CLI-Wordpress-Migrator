@@ -1,4 +1,6 @@
 Revision history for CLI::Wordpress::Migrator
 
 {{$NEXT}}
+
+0.0.1  2024-11-03T16:48:56Z
     - Initial version
