@@ -1,7 +1,5 @@
-NAME
-====
-
 CLI::Wordpress::Migrator
+========================
 
 GETTING STARTED
 ===============
