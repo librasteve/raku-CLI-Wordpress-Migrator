@@ -142,6 +142,8 @@ viz. https://make.wordpress.org/cli/handbook/how-to/how-to-install/
 | Update WordPress Configuration:      | `wp-config.php s/xxx/yyy/`            |
 | Set File Permissions[1]:             | `chmod -R a=r,a+X,u+w .`              |
 
+Notes:
+- a failed import (eg. "to" site has WP web admin configurator asking for info like a new install) is often caused by incorrect wp-config>db>prefix in `rawm-config.yaml`
 
 ### Search & Replace
 
